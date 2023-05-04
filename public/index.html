@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Home</title>
+      <link rel="stylesheet" href="css/style.css">
+      <!-- import JS file -->
+      <!-- <script src="js/script.js"></script> -->
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Home</h1>
+          <p>This is the home page.</p>
+        </div>
+        <form method="POST" class="upload-form" enctype="multipart/form-data" action="/api/files/upload">
+          <input type="file" name="file" />
+          <button>Upload</button>
+        </form>
+      </div>
+      <button>
+        <a href="/api/files/6453aa9404a8652ce23c3d94/download">Download</a>
+      </button>
+    </div>
+  </body>
+
+</html>
