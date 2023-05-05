@@ -46,6 +46,24 @@ const downloadProxy = createProxyMiddleware({
 });
 app.get('/api/files/:id/download', downloadProxy);
 
+const transcribeProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: (_path, req) => {
+    return `/transcribe/${req.params.id}`
+  }
+});
+app.post('/api/files/:id/transcribe', transcribeProxy);
+
+const readFileProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: (_path, req) => {
+    return `/${req.params.id}`
+  }
+});
+app.get('/api/files/:id', readFileProxy);
+
 /**
  * Define proxy for auth service
  * - /api/login -> /login

@@ -5,7 +5,7 @@
       <title>Home</title>
       <link rel="stylesheet" href="css/style.css">
       <!-- import JS file -->
-      <!-- <script src="js/script.js"></script> -->
+      <script src="js/script.js"></script>
   </head>
 
   <body>
@@ -15,14 +15,13 @@
           <h1>Home</h1>
           <p>This is the home page.</p>
         </div>
-        <form method="POST" class="upload-form" enctype="multipart/form-data" action="/api/files/upload">
+        <form id="upload-form" class="upload-form">
           <input type="file" name="file" />
-          <button>Upload</button>
+          <button type="submit">Upload</button>
         </form>
       </div>
-      <button>
-        <a href="/api/files/6453aa9404a8652ce23c3d94/download">Download</a>
-      </button>
+      <div id="file-container">
+      </div>
     </div>
   </body>
 
