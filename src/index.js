@@ -64,6 +64,13 @@ const readFileProxy = createProxyMiddleware({
 });
 app.get('/api/files/:id', readFileProxy);
 
+const listFilesProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/api/files': '/' },
+});
+app.get('/api/files', listFilesProxy);
+
 /**
  * Define proxy for auth service
  * - /api/login -> /login
