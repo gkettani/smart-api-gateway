@@ -7,6 +7,39 @@ document.addEventListener('DOMContentLoaded', function () {
   btn.innerHTML = "Transcribe";
   btn.classList.add('btn');
 
+  let btn2 = document.createElement("button");
+  btn2.innerHTML = "Synthesize";
+  btn2.classList.add('btn');
+
+  btn2.addEventListener('click', async function (e) {
+    e.preventDefault();
+
+    const res = await fetch(`/api/files/${file_id}/synthesize`, {
+      method: 'POST',
+    });
+
+    if (res.ok) {
+      btn2.innerHTML = 'Synthesizing...';
+      btn2.disabled = true;
+      let counter = 0;
+      let it = setInterval(async function () {
+        const file = await getFile(file_id);
+        counter++;
+        if (file.synthesis) {
+          clearInterval(it);
+          btn2.remove();
+          container.innerHTML += ` <p>Synthesis:<br /> ${file.synthesis}</p>`;
+        }
+        if (counter > 10) {
+          clearInterval(it);
+          btn2.remove();
+          container.innerHTML += ` <p>Synthsizing failed</p>`;
+        }
+      }, 5000);
+    }
+  });
+
+
   btn.addEventListener('click', async function (e) {
     e.preventDefault();
 
@@ -69,6 +102,12 @@ document.addEventListener('DOMContentLoaded', function () {
       container.innerHTML += ` <p>Transcript:<br /> ${file.transcript}</p>`;
     } else {
       container.appendChild(btn);
+    }
+
+    if (file.synthesis) {
+      container.innerHTML += ` <p>Synthesis:<br /> ${file.synthesis}</p>`;
+    } else if(file.transcript){
+      container.appendChild(btn2);
     }
   })()
 

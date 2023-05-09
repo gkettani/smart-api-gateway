@@ -71,6 +71,14 @@ const listFilesProxy = createProxyMiddleware({
 });
 app.get('/api/files', listFilesProxy);
 
+const synthesizeProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: (_path, req) => {
+    return `/synthesize/${req.params.id}`
+  }
+});
+app.post('/api/files/:id/synthesize', synthesizeProxy);
 /**
  * Define proxy for auth service
  * - /api/login -> /login
