@@ -1,4 +1,5 @@
 import express from  'express';
+import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Auth, NoPageFound, ErrorHandler } from './api/middlewares/index.js';
 
@@ -9,6 +10,8 @@ const FILES_SERVICE_HOST = process.env.FILES_SERVICE_HOST || 'http://localhost';
 const FILES_SERVICE_PORT = process.env.FILES_SERVICE_PORT || '3000';
 
 const app = express();
+
+app.use(cors());
 
 // serve client files
 app.use('/', express.static('public'));
@@ -30,12 +33,12 @@ app.get('/api', Auth, async (req, res) => {
  * - /api/files/:id/download -> /files/:id/download
  * - /api/files/:id/delete -> /files/:id/delete
  */
-const uploadProxy = createProxyMiddleware({
+const createFileProxy = createProxyMiddleware({
   target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
   changeOrigin: true,
-  pathRewrite: { '^/api/files/upload': '/upload' },
+  pathRewrite: { '^/api/files': '/files' },
 });
-app.post('/api/files/upload', uploadProxy);
+app.post('/api/files', createFileProxy);
 
 const downloadProxy = createProxyMiddleware({
   target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
@@ -59,7 +62,7 @@ const readFileProxy = createProxyMiddleware({
   target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
   changeOrigin: true,
   pathRewrite: (_path, req) => {
-    return `/${req.params.id}`
+    return `/files/${req.params.id}`
   }
 });
 app.get('/api/files/:id', readFileProxy);
@@ -79,6 +82,40 @@ const synthesizeProxy = createProxyMiddleware({
   }
 });
 app.post('/api/files/:id/synthesize', synthesizeProxy);
+
+const listFoldersProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/api/folders': '/folders' },
+});
+app.get('/api/folders', listFoldersProxy);
+
+const createFoldersProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/api/folders': '/folders' },
+});
+app.post('/api/folders', createFoldersProxy);
+
+const listFilesByFolderProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: (_path, req) => {
+    return `/folders/${req.params.id}/files`
+  }
+});
+app.get('/api/folders/:id/files', listFilesByFolderProxy);
+
+const readFolderProxy = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: (_path, req) => {
+    return `/folders/${req.params.id}`
+  }
+});
+app.get('/api/folders/:id', readFolderProxy);
+
+
 /**
  * Define proxy for auth service
  * - /api/login -> /login
