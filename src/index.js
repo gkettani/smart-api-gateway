@@ -65,6 +65,13 @@ app.get('/api/syntheses/:id', Auth, synthesesProxy.read);
 app.put('/api/syntheses/:id', Auth, synthesesProxy.update);
 
 /**
+ * Define proxy search service
+ */
+app.get('/api/search', Auth, filesProxy.search);
+
+app.post('/api/search-transcript', Auth, filesProxy.searchTranscript);
+
+/**
  * Define proxy for auth service
  */
 app.post('/api/login', authProxy.login);

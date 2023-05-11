@@ -98,6 +98,24 @@ const download = createProxyMiddleware({
   }
 });
 
+const search = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/api/search': '/search' },
+  onProxyReq: (proxyReq, req, _res) => {
+    proxyReq.setHeader('x-user-id', req.user.id);
+  }
+});
+
+const searchTranscript = createProxyMiddleware({
+  target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
+  changeOrigin: true,
+  pathRewrite: { '^/api/search-transcript': '/searchTranscript' },
+  onProxyReq: (proxyReq, req, _res) => {
+    proxyReq.setHeader('x-user-id', req.user.id);
+  }
+});
+
 export default {
   create,
   read,
@@ -107,5 +125,7 @@ export default {
   synthesize,
   transcribe,
   download,
-  readTranscript
+  readTranscript,
+  search,
+  searchTranscript
 };
