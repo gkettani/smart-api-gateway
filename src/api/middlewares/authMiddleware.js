@@ -16,7 +16,7 @@ export default async function authMiddleware(req, _res, next) {
     next(new UnauthorizedError('Unauthorized'));
     return;
   }
-  const { id, username } = await isAuth.json();
-  req.user = { id, username };
+  const { id, username, name } = await isAuth.json();
+  req.user = { id, username, name };
   next();
 }
