@@ -4,7 +4,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Auth, NoPageFound, ErrorHandler } from './api/middlewares/index.js';
 
 const AUTH_SERVICE_HOST = process.env.AUTH_SERVICE_HOST || 'http://localhost';
-const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT || '3000';
+const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT || '5000';
 
 const FILES_SERVICE_HOST = process.env.FILES_SERVICE_HOST || 'http://localhost';
 const FILES_SERVICE_PORT = process.env.FILES_SERVICE_PORT || '3000';
@@ -53,7 +53,7 @@ const transcribeProxy = createProxyMiddleware({
   target: `http://${FILES_SERVICE_HOST}:${FILES_SERVICE_PORT}`,
   changeOrigin: true,
   pathRewrite: (_path, req) => {
-    return `/transcribe/${req.params.id}`
+    return `/files/${req.params.id}/transcribe`
   }
 });
 app.post('/api/files/:id/transcribe', transcribeProxy);
